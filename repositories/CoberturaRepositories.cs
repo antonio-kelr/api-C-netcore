@@ -19,21 +19,29 @@ namespace Coberturas.Repositories
         public void UpdateCobertura(int id, CoberturaModel updatedCobertura)
         {
             var existingCobertura = _context.Coberturas.Local.FirstOrDefault(a => a.Id == id)
-                                ?? _context.Coberturas.Find(id);
+                                    ?? _context.Coberturas.Find(id);
 
             if (existingCobertura != null)
             {
-                // Atualize somente os campos alterados
+                // Atualize os campos
                 _context.Entry(existingCobertura).CurrentValues.SetValues(updatedCobertura);
+
+                // Garante que o ID não será alterado
+                _context.Entry(existingCobertura).Property(e => e.Id).IsModified = false;
+
+                // Se necessário, force as propriedades a serem marcadas como modificadas
+                _context.Entry(existingCobertura).State = EntityState.Modified;
             }
         }
+
+
 
         public void Create(CoberturaModel cobertura)
         {
             _context.Coberturas.Add(cobertura);
         }
 
-           public async Task<IEnumerable<CoberturaModel>> Getall()
+        public async Task<IEnumerable<CoberturaModel>> Getall()
         {
             return await _context.Coberturas
                                  .Include(c => c.Imagens)

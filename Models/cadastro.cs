@@ -8,14 +8,14 @@ namespace Cadastro.Models
     public class CadastroModel
     {
         public int Id { get; set; }
-        [MinLength(3)]  
-        public string Nome { get; set; }
+        [MinLength(3)]
+        public required string Nome { get; set; }
 
-        [EmailAddress] 
-        [MinLength(6)]  
-        public string Email { get; set; }
+        [EmailAddress]
+        [MinLength(6)]
+        public required string Email { get; set; }
 
-        [MinLength(6)]  
-        public string Senha { get; set; }
+        [MinLength(6)]
+        public required string Senha { get; set; }
     }
 }

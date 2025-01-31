@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Cadastro.Services;
-using Cadastro.Models;
 
 namespace Cadastro.Controllers
 {
@@ -18,20 +17,23 @@ namespace Cadastro.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest loginRequest)
         {
-            var token = _authService.Authenticate(loginRequest.Email, loginRequest.Senha);
+            // Chama o serviço de autenticação
+            var authResult = _authService.Authenticate(loginRequest.Email, loginRequest.Senha);
 
-            if (token == null)
+            // Verifica se o resultado é nulo (usuário não encontrado ou senha incorreta)
+            if (authResult == null)
                 return Unauthorized("E-mail ou senha inválidos.");
 
-            return Ok(new { Token = token });
+            // Retorna tanto o token quanto o UserId na resposta
+            return Ok(new { Token = authResult.Token, UserId = authResult.UserId });
         }
-
-        
     }
+
+
 
     public class LoginRequest
     {
-        public string Email { get; set; }
-        public string Senha { get; set; }
+        public required string Email { get; set; }
+        public required string Senha { get; set; }
     }
 }

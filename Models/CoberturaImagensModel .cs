@@ -9,13 +9,9 @@ namespace CoberturasImagens.Models
         public int Id { get; set; }
         public string? Titulo { get; set; }
         public string? Url { get; set; }
-        public int CoberturaId { get; set; } // Chave estrangeira
-        public CoberturaModel? Cobertura { get; set; } // Propriedade de navegação (pode ser nullable)
+        public int CoberturaId { get; set; }
+        public CoberturaModel? Cobertura { get; set; }
 
-          public override string ToString()
-    {
-        return $"Id: {Id}, Titulo: {Titulo}, Url: {Url}, CoberturaId: {CoberturaId}, Cobertura: {Cobertura?.ToString() ?? "null"}";
-    }
     }
 
 

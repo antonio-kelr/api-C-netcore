@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -19,6 +16,17 @@ using CoberturaImagens.Services;
 using Cadastro.intefaces;
 using Cadastro.Repositories;
 using Cadastro.Services;
+using Classificados.Services;
+using Classificados.intefaces;
+using Classificados.Repositories;
+using Classificado.Interfaces;
+using Recado.intefaces;
+using Recado.Repositories;
+using Banner.intefaces;
+using Banner.Repositories;
+using banner.Services;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,14 +41,28 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAgenda, AgendaRepositories>();
 builder.Services.AddScoped<IACoberturas, CoberturaRepositories>();
 builder.Services.AddScoped<IANoticias, NoticiasRepositories>();
+builder.Services.AddScoped<IRecado, RecadoRepositories>();
+builder.Services.AddScoped<IBanner, BannerRepositories>();
 builder.Services.AddScoped<ICoberturaImagens, CoberturaImagensRepository>();
+builder.Services.AddScoped<IClassificadoImagen, ClassificaImagemdoRepositories>();
 builder.Services.AddScoped<IACadastro, CadastroRepositories>();
+builder.Services.AddScoped<IClassificados, ClassificadoRepositories>();
 
+builder.Services.AddScoped<FirebaseImageBanner>();
 builder.Services.AddScoped<FirebaseImageService>();
 builder.Services.AddScoped<CoberturaImagensServices>();
+builder.Services.AddScoped<ClassificadosServices>();
 builder.Services.AddScoped<FirebaseImageServiceNoticias>();
 
-// Configuração de autenticação JWT
+// Configuração do CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        policy => policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
@@ -49,42 +71,36 @@ builder.Services.AddAuthentication("Bearer")
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],  // Defina o Issuer na configuração
-            ValidAudience = builder.Configuration["Jwt:Audience"], // Defina o Audience na configuração
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])) // Chave secreta
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]))
         };
     });
 
-// Configuração dos controladores e ciclos de referência
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-        options.JsonSerializerOptions.WriteIndented = true; // Opcional: para JSON formatado
+        options.JsonSerializerOptions.WriteIndented = true;
     });
 
-// Configuração do Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configuração de ambiente
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Middleware padrão
 app.UseHttpsRedirection();
+app.UseCors("AllowLocalhost");
 
-// Middleware de autenticação
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Mapeamento de controladores
 app.MapControllers();
 
-// Execução da aplicação
 app.Run();

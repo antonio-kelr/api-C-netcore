@@ -1,17 +1,20 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using BCrypt.Net;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using database.Data;
-
 
 namespace Cadastro.Services
 {
     public interface IAuthService
     {
-        string Authenticate(string email, string senha);
+        AuthResult Authenticate(string email, string senha);
+    }
+
+    public class AuthResult
+    {
+        public string Token { get; set; }
+        public int UserId { get; set; }
     }
 
     public class AuthService : IAuthService
@@ -25,7 +28,7 @@ namespace Cadastro.Services
             _configuration = configuration;
         }
 
-        public string Authenticate(string email, string senha)
+        public AuthResult Authenticate(string email, string senha)
         {
             var user = _context.Cadastro.FirstOrDefault(u => u.Email == email);
             if (user == null)
@@ -52,7 +55,11 @@ namespace Cadastro.Services
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new AuthResult
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                UserId = user.Id
+            };
         }
     }
 }

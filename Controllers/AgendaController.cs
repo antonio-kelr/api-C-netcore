@@ -49,13 +49,19 @@ namespace MyApp.Controllers
         [HttpPost]
         public async Task<ActionResult<AgendaModel>> Create([FromForm] AgendaModel agenda, IFormFile image)
         {
+            if (string.IsNullOrEmpty(agenda.Nome))
+            {
+                return BadRequest(new { message = "O campo 'Nome' é obrigatório." });
+            }
+
+            agenda.Slug = SlugGenerator.GenerateSlug(agenda.Nome);
+
             // Verifica se a imagem foi enviada
             if (image == null || image.Length == 0)
             {
                 return BadRequest(new { message = "A imagem não foi fornecida." });
             }
 
-            agenda.Slug = SlugGenerator.GenerateSlug(agenda.Nome);
 
 
             // Faz o upload da imagem e recebe o URL da imagem no Firebase
@@ -77,14 +83,36 @@ namespace MyApp.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, AgendaModel updatedAgenda)
+        public async Task<IActionResult> Update(int id, [FromForm] AgendaModel updatedAgenda, [FromForm] IFormFile? image)
         {
+            if (string.IsNullOrEmpty(updatedAgenda.Nome))
+            {
+                return BadRequest(new { message = "O campo 'Nome' é obrigatório." });
+            }
+
+            updatedAgenda.Slug = SlugGenerator.GenerateSlug(updatedAgenda.Nome);
+
+
             var existingAgenda = await _agendaRepository.GetById(id);
 
             if (existingAgenda == null)
             {
                 return NotFound(new { message = "Agenda não encontrada." });
             }
+
+            // Processa a imagem apenas se ela for enviada
+            if (image != null && image.Length > 0)
+            {
+                var imageUrl = await _imageService.UploadImageAsync(image);
+                updatedAgenda.Url = imageUrl; // Atualiza o campo de URL
+            }
+            else
+            {
+                updatedAgenda.Url = existingAgenda.Url; // Mantém o URL atual
+            }
+
+            // Garante que o ID do modelo atualizado corresponda ao ID original
+            updatedAgenda.Id = existingAgenda.Id;
 
             _agendaRepository.UpdateAgenda(id, updatedAgenda);
 
@@ -95,7 +123,6 @@ namespace MyApp.Controllers
 
             return BadRequest(new { message = "Erro ao atualizar a agenda." });
         }
-
         // DELETE: api/Agenda/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

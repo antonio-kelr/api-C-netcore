@@ -2,8 +2,6 @@ using CoberturasImagens.Interfaces;
 using CoberturasImagens.Models;
 using database.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CoberturasImagens.Repositories
 {

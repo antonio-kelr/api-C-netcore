@@ -133,3 +133,4 @@ C:\Users\Antonio\Documents\arquivos C#\apiNet\bin\Debug\net8.0\Microsoft.Identit
 C:\Users\Antonio\Documents\arquivos C#\apiNet\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Antonio\Documents\arquivos C#\apiNet\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\Antonio\Documents\arquivos C#\apiNet\bin\Debug\net8.0\appsettingsExemplo.json
+C:\Users\Antonio\Documents\arquivos C#\apiNet\obj\Debug\net8.0\apiNet.sourcelink.json

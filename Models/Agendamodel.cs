@@ -4,11 +4,11 @@
 
     public class AgendaModel
     {
-        public int Id { get; set; }  // ID do agendamento
-        public string Nome { get; set; }  // Nome do agendamento
-        public string? Url { get; set; }  // URL adicional do agendamento
-        public string? Slug { get; set; }  // Slug para URL amigável
-        public DateTime Data { get; set; } = DateTime.UtcNow;  // Data do agendamento
-        public string Descricao { get; set; }  // Descrição do agendamento
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public string? Url { get; set; }
+        public string? Slug { get; set; }
+        public DateTime Data { get; set; } = DateTime.UtcNow;
+        public string Descricao { get; set; }
     }
 }

@@ -23,8 +23,11 @@ namespace Agenda.Repositories
 
             if (existingAgenda != null)
             {
-                // Atualize somente os campos alterados
+                // Atualize somente os campos que podem ser modificados
                 _context.Entry(existingAgenda).CurrentValues.SetValues(updatedAgenda);
+
+                // Garante que o ID não será alterado
+                _context.Entry(existingAgenda).Property(e => e.Id).IsModified = false;
             }
         }
 

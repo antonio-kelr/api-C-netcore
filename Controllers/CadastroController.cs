@@ -28,14 +28,14 @@ namespace Cadastro.Controllers
             {
                 Nome = cadastroRequest.Nome,
                 Email = cadastroRequest.Email,
-                Senha = cadastroRequest.Senha 
+                Senha = cadastroRequest.Senha
             };
 
             await _cadastroRepository.Create(cadastro);
             return Ok("Cadastro realizado com sucesso.");
         }
 
-           [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try

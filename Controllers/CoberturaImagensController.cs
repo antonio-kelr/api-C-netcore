@@ -22,7 +22,7 @@ namespace CoberturasImagens.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CoberturaImagemModel>>> GetAll()
         {
-            var agendas = await  _coberturaImagensRepository.GetAllAsync();
+            var agendas = await _coberturaImagensRepository.GetAllAsync();
 
             return Ok(agendas);
         }
@@ -31,7 +31,7 @@ namespace CoberturasImagens.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CoberturaImagemModel>> GetById(int id)
         {
-            var coberturaImg = await  _coberturaImagensRepository.GetByIdAsync(id);
+            var coberturaImg = await _coberturaImagensRepository.GetByIdAsync(id);
 
             if (coberturaImg == null)
             {
@@ -46,7 +46,8 @@ namespace CoberturasImagens.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CoberturaImagemRequest coberturaImagemRequest, [FromForm] IEnumerable<IFormFile> images)
         {
-              Console.WriteLine($"CoberturaId recebido: {coberturaImagemRequest}");
+            Console.WriteLine($"CoberturaId recebido: {coberturaImagemRequest.CoberturaId}");
+
             if (coberturaImagemRequest == null || images == null)
             {
                 return BadRequest("Dados inválidos.");
@@ -62,7 +63,7 @@ namespace CoberturasImagens.Controllers
                 var coberturaImagem = new CoberturaImagemModel
                 {
                     Titulo = result.FileName,
-                    Url = result.Url,  
+                    Url = result.Url,
                     CoberturaId = coberturaImagemRequest.CoberturaId
                 };
 

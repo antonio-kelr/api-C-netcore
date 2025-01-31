@@ -19,7 +19,7 @@ namespace MyApp.Controllers
             _coberturaRepositories = coberturaRepositories;
         }
 
-         [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<CoberturaModel>>> GetAll()
         {
             var coberturas = await _coberturaRepositories.Getall();
@@ -42,6 +42,11 @@ namespace MyApp.Controllers
         [HttpPost]
         public async Task<ActionResult<CoberturaModel>> Create(CoberturaModel cobertura)
         {
+            if (string.IsNullOrEmpty(cobertura.Titulo))
+            {
+                return BadRequest(new { message = "O campo 'Titulo' é obrigatório." });
+            }
+
             cobertura.Slug = SlugGenerator.GenerateSlug(cobertura.Titulo);
             _coberturaRepositories.Create(cobertura);
             bool saved = await _coberturaRepositories.SaveAllAsync();
@@ -57,12 +62,20 @@ namespace MyApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, CoberturaModel updatedCobertura)
         {
+            if (string.IsNullOrEmpty(updatedCobertura.Titulo))
+            {
+                return BadRequest(new { message = "O campo 'Titulo' é obrigatório." });
+            }
+
+            updatedCobertura.Slug = SlugGenerator.GenerateSlug(updatedCobertura.Titulo);
+
             var existingCobertura = await _coberturaRepositories.GetById(id);
 
             if (existingCobertura == null)
             {
                 return NotFound(new { message = "cobertura não encontrada." });
             }
+            updatedCobertura.Id = existingCobertura.Id;
 
             _coberturaRepositories.UpdateCobertura(id, updatedCobertura);
 

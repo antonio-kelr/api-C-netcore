@@ -1,10 +1,4 @@
 using Firebase.Storage;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CoberturaImagens.Services
 {
@@ -28,7 +22,7 @@ namespace CoberturaImagens.Services
                     throw new Exception($"Formato de arquivo não suportado: {image.FileName}. Use JPG, JPEG, PNG ou GIF.");
 
                 string uniqueFileName = $"{Guid.NewGuid()}{extension}";
-                string folder = "ImagemAgenda";
+                string folder = "ImagemCobertura";
                 string firebasePath = $"{folder}/{uniqueFileName}";
 
                 var storage = new FirebaseStorage(_firebaseBucket, new FirebaseStorageOptions

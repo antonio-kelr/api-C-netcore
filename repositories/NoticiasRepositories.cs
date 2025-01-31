@@ -16,15 +16,18 @@ namespace Noticias.Repositories
             _context = context;
         }
 
-        public void UpdateNoticia(int id, NoticiasModel updatedNoticia)
+        public void UpdateNoticia(int id, NoticiasModel noticia)
         {
             var existingNoticia = _context.Noticias.Local.FirstOrDefault(a => a.Id == id)
                                 ?? _context.Noticias.Find(id);
 
             if (existingNoticia != null)
             {
-                // Atualize somente os campos alterados
-                _context.Entry(existingNoticia).CurrentValues.SetValues(updatedNoticia);
+                // Atualize somente os campos que podem ser modificados
+                _context.Entry(existingNoticia).CurrentValues.SetValues(noticia);
+
+                // Garante que o ID não será alterado
+                _context.Entry(existingNoticia).Property(e => e.Id).IsModified = false;
             }
         }
 

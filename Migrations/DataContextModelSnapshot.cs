@@ -92,6 +92,97 @@ namespace apiNet.Migrations
                     b.ToTable("cadastro", (string)null);
                 });
 
+            modelBuilder.Entity("ClasificadoImagens.Models.ClassificadoImagemModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassificadoId")
+                        .HasColumnType("integer")
+                        .HasColumnName("classificado_id");
+
+                    b.Property<string>("Titulo")
+                        .HasColumnType("text")
+                        .HasColumnName("titulo");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassificadoId");
+
+                    b.ToTable("classificado_imagem", (string)null);
+                });
+
+            modelBuilder.Entity("Classificados.Models.ClassificadosModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Categoria")
+                        .HasColumnType("integer")
+                        .HasColumnName("categoria");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("cidade");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("descricao");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("estado");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("preco");
+
+                    b.Property<string>("Slug")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("slug");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("telefone");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("titulo");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("classificado", (string)null);
+                });
+
             modelBuilder.Entity("Coberturas.Models.CoberturaModel", b =>
                 {
                     b.Property<int>("Id")
@@ -205,6 +296,83 @@ namespace apiNet.Migrations
                     b.ToTable("noticias", (string)null);
                 });
 
+            modelBuilder.Entity("Recado.Models.RecadoModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data");
+
+                    b.Property<string>("Destinatario")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("destinatario");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("mensagem");
+
+                    b.Property<string>("Remetente")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("remetente");
+
+                    b.Property<string>("Slug")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("slug");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("recado", (string)null);
+                });
+
+            modelBuilder.Entity("banner.Models.BannerModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Titulo")
+                        .HasColumnType("text")
+                        .HasColumnName("titulo");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text")
+                        .HasColumnName("url");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("banner", (string)null);
+                });
+
+            modelBuilder.Entity("ClasificadoImagens.Models.ClassificadoImagemModel", b =>
+                {
+                    b.HasOne("Classificados.Models.ClassificadosModel", "Classificado")
+                        .WithMany("Imagens")
+                        .HasForeignKey("ClassificadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Classificado");
+                });
+
             modelBuilder.Entity("CoberturasImagens.Models.CoberturaImagemModel", b =>
                 {
                     b.HasOne("Coberturas.Models.CoberturaModel", "Cobertura")
@@ -214,6 +382,11 @@ namespace apiNet.Migrations
                         .IsRequired();
 
                     b.Navigation("Cobertura");
+                });
+
+            modelBuilder.Entity("Classificados.Models.ClassificadosModel", b =>
+                {
+                    b.Navigation("Imagens");
                 });
 
             modelBuilder.Entity("Coberturas.Models.CoberturaModel", b =>
